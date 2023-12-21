@@ -6,6 +6,9 @@
     <title>Weather App</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="/assets/icons8-cloud-16.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300;0,400;0,500;0,700;0,800;1,600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="wrapper">
@@ -22,8 +25,8 @@
             <!-- grant location access -->
             <div class="grant-location-container">
                 <img src="./assets/location.png" alt="" width="80" height="80" loading="lazy">
-                <p>Grant Location Access</p>
-                <p>Allow Access to get weather Information</p>
+                <p style="font-size: 26px; font-weight: 800; color: white;">Grant Location Access</p>
+                <p style="color: white;">Allow Access to get weather Information</p>
                 <button class="btn" data-grantAccess>Grant Access</button>
             </div>
 
@@ -60,19 +63,19 @@
                     <!-- card 1 -->
                     <div class="parameter">
                         <img src="./assets/wind.png" loading="lazy"">
-                        <p>Wind Speed</p>
+                        <p>WINDSPEED</p>
                         <p data-windspeed></p>
                     </div>
                     <!-- card 2 -->
                     <div class="parameter">
                         <img src="./assets/humidity.png">
-                        <p>Humidity</p>
+                        <p>HUMIDITY</p>
                         <p data-humidity></p>
                     </div>
                     <!-- card 3 -->
                     <div class="parameter">
                         <img src="./assets/cloud.png">
-                        <p>Clouds</p>
+                        <p>CLOUDS</p>
                         <p data-cloudiness></p>
                     </div>
                 </div>

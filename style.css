@@ -1,10 +1,159 @@
+*,
+*::before,
+*::after{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Merriweather Sans', sans-serif;
+}
+
 .tab.current-tab{
     background-color:rgba(219,226,239,0.5);
     border-radius: 4px;
 }
 
+.wrapper{
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    background-image: linear-gradient(-45deg, #112d4e,#3d70ac);
+}
+
+h1{
+    text-align: center;
+    margin: 30px auto;
+    color: white;
+}
+
+.tab-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: no-wrap;
+    width: 600px;
+    justify-content: space-around;
+    margin: 0 auto;
+}
+
+.tab{
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+}
+
+.tab.current-tab{
+    border: 1px solid transparent;
+    border-radius: 15px;
+}
+
+.form-container{
+    scale: 0;
+    width: 90%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    gap: 30px;
+}
+
+[data-searchInput]{
+    width: 40%;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+}
+
+.form-container .btn{
+    border: none;
+    background: transparent;
+    outline: none;  
+}
+
 .form-container.active{
     scale: 1;
-    opacity: 1;
+}
+.weather-container{
+    position: relative;
+    height: 500px;
+}
+.grant-location-container{
     display: flex;
+    flex-direction: column;
+    height: 200px;
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    scale: 0;    
+}
+
+.grant-location-container.active{
+    scale: 1;  
+}
+
+.loading-container{
+    scale: 0;
+    position: absolute;
+    top: -5%;
+    right: 47%;
+    opacity: 0;
+}
+.loading-container.active{
+    scale: 1;
+    position: absolute;
+    top: -5%;
+    right: 47%;
+}
+
+.user-info-container{
+    scale: 0;
+    width:1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin: 0 auto;
+
+}
+.user-info-container.active{
+    scale: 1;
+}
+
+.name{
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    justify-content: center;
+    gap: 20px;
+    
+}
+
+.user-info-container img{
+    width: 90;
+    height: 90;
+}
+
+.parameter-container{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+}
+
+.parameter{
+    background-color: #8298b7;
+    padding: 20px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+}
+
+.parameter img{
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
 }
