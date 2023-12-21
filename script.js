@@ -1,95 +1,155 @@
-console.log('shreyas hellow');
+// initializing with variables
+const userTab = document.querySelector('[data-userWeather]');
+const searchTab = document.querySelector('[data-searchWeather]');
+const userContainer = document.querySelector('.weather-container');
+const grantAccessContainer = document.querySelector('.grant-location-container');
+const searchForm = document.querySelector('[data-searchForm]');
+const loadingScreen = document.querySelector('.loading-container');
+const userInfoContainer = document.querySelector('.user-info-container');
 
-function renderWeatherInfo(data){
-    let newPara = document.createElement('p');
-    newPara.textContent = `${data?.main?.temp.toFixed(2)}°C`
+let currentTab = userTab;
+const API_KEY = "7762427f5d189160ba1129011db8309c";
+currentTab.classList.add('current-tab');
+getfromSessionStorage();
 
-    document.body.appendChild(newPara);
+// switchtab function
+function switchTab(clickedTab){
+    if(clickedTab != currentTab){
+        currentTab.classList.remove('current-tab');
+        currentTab = clickedTab;
+        currentTab.classList.add('current-tab');
+
+        if(!searchForm.classList.contains('active')){
+            // if searchform is invisible if yes then make it visible
+            userInfoContainer.classList.remove('active');
+            grantAccessContainer.classList.remove('active');
+            searchForm.classList.add('active');
+        }
+        else{
+            // to make your weather visible
+            searchForm.classList.remove('active');
+            userInfoContainer.classList.remove('active');
+            // check local storage for coordinates
+            getfromSessionStorage();
+        }
+    }
 }
 
+userTab.addEventListener('click',()=>{
+    // clicked tab as input
+    switchTab(userTab);
+})
 
-async function fetchWeatherDetails(){
+searchTab.addEventListener('click',()=>{
+    switchTab(searchTab);
+})
+
+// check if coordinates are already present session storage
+function getfromSessionStorage(){
+    const localCoordinates = sessionStorage.getItem('user-coordinates');
+    if(!localCoordinates){
+        // if there are no local coordinates
+        grantAccessContainer.classList.add('active');
+    }
+    else{
+        const coordinates = JSON.parse(localCoordinates);
+        fetchUserWeatherInfo(coordinates);
+    }
+}
+
+async function fetchUserWeatherInfo(coordinates){
+    const {lat, lon} = coordinates;
+    // make grant location access container invisible
+    grantAccessContainer.classList.remove('active');
+    // make loading screen visible
+    loadingScreen.classList.add('active');
+
+    // API call
     try{
-        let city = 'goa';
+        const res = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+        );
+        const data = res.json();
 
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lq=${city}&appid={d1845658f92b31c64bd94f06f7188c9c}`);
-        const data = await response.json;    
+        loadingScreen.classList.remove('active');
+        userInfoContainer.classList.add('active');
         renderWeatherInfo(data);
     }
     catch(err){
-        // handle the error here
-        console.log('Error found in catch');
+        loadingScreen.classList.remove('active');
     }
-    
-}  
+}   
 
-async function getCustomWeatherDetails(){
+function renderWeatherInfo(weatherInfo){
+    // fetch elements first
+    const cityName = document.querySelector('[data-cityName]');
+    const countryIcon = document.querySelector('[data-countryIcon]');
+    const desc = document.querySelector('[data-weatherDesc]');
+    const weatherIcon = document.querySelector('[data-weatherIcon]');
+    const temp = document.querySelector('[data-temp]');
+    const windspeed = document.querySelector('[data-temp]');
+    const humidity = document.querySelector('[data-humidity]');
+    const cloudiness = document.querySelector('[data-cloudiness]');
+
+    // fetch values from weatherInfo object and put in ui elements
+    cityName.innerText = weatherInfo?.name;
+    countryIcon.src = `https://flagcdn.com/144x108/${weatherInfo?.sys?.country.toLowerCase()}.png`;
+    desc.innerText = weatherInfo?.weather?.[0]?.description;
+    weatherIcon.src=`http:/openweathermap.org/img/w/${weatherInfo?.weatger?.[0]?.icon}.png`;
+    temp.innerText = weatherInfo?.main?.temp;
+    windspeed.innerText = weatherInfo?.wind?.speed;
+    humidity.innerText = weatherInfo?.main?.humidity;
+    cloudiness.innerText = weatherInfo?.clouds?.all;
+}
+
+const grantAccessButton = document.querySelector('[data-grantAccess]');
+
+function getLocation(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(showPosition);
+    }
+    else{
+        // show an alert for no geolocation support available
+    }
+}
+
+function showPosition(position){
+    const userCoordinates = {
+        lat:position.coords.lattitude,
+        lon:position.coords.longitude
+    }
+    sessionStorage.setItem("userCoordinates", JSON.stringify(userCoordinates));
+    fetchUserWeatherInfo(userCoordinates);
+}
+
+grantAccessButton.addEventListener('click', getLocation);
+
+const searchInput = document.querySelector('[data-searchInput]');
+
+searchForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    let cityName = searchInput.value;
+
+    if(cityName === "")
+        return;
+    else
+        fetchSearchWeatherInfo(cityName);
+})
+
+async function fetchSearchWeatherInfo(city){
+    loadingScreen.classList.add('active');
+    userInfoContainer.classList.remove('active');
+    grantAccessContainer.classList.remove('active');
+
     try{
-    let lattitude = 15.234;
-    let longitude = 12.3123;
+        const response = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric');
 
-    let result = await fetch(`https://api.openweathermap.org/data/2.5/weather?lq=${lattitude}${longitude}&appid={d1845658f92b31c64bd94f06f7188c9c}`);
-    let data = await result.json;
-
-    console.log(data);
+        const data = await response.json();
+        loadingScreen.classList.remove('active');
+        userInfoContainer.classList.add('active');
+        renderWeatherInfo(data);
     }
-    catch(err){
-        console.log('Error found',err);
+    catch(e){
+
     }
-    
 }
-
-
-
-function renderBTC(data){
-    let container = document.createElement('div');
-    container.classList.add('container');
-    container.style.width = '400px';
-    container.style.height = '300px';
-    container.style.margin = '0 auto';
-
-    document.body.append(container);
-
-    let btcHeading = document.createElement('h1');
-    btcHeading.textContent = data.chartName;
-    btcHeading.style.textAlign ='center';
-
-    let currency = document.createElement('h2');
-    currency.textContent = `Below Price is in ${data.bpi.USD.code}`;
-    currency.style.textAlign='center';
-
-    let priceBTC = document.createElement('p');
-    priceBTC.textContent = `$ ${data.bpi.USD.rate}`;
-    priceBTC.style.color = 'yellowgreen';
-    priceBTC.style.fontStyle = 'bold';
-    priceBTC.style.border = '1px solid blue';
-    priceBTC.style.textAlign = 'center';
-    priceBTC.style.padding = '10px 0';
-
-
-    let timeBTC = document.createElement('p');
-    timeBTC.textContent = `Updated at ${data.time.updated}`;
-    timeBTC.style.width = '100%';
-
-
-    container.appendChild(btcHeading);
-    container.appendChild(currency);
-    container.appendChild(priceBTC);
-    container.appendChild(timeBTC);
-    
-}
-
-async function BTC(){
-    const response = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
-    const data = await response.json();
-
-    let name = data.chartName;
-    let code = data.bpi.USD.code;
-    let price = data.bpi.USD.rate;
-    let time = data.time.updated;
-    console.log(data,name,code,price,time);
-    renderBTC(data); 
-}
-
-
-
